@@ -1,3 +1,7 @@
+# custom files added
+/data
+/yolo11s.pt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
