@@ -1,6 +1,7 @@
 # custom files added
 /data
-/yolo11s.pt
+/yolo*.pt
+/runs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
