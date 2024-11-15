@@ -1,16 +1,148 @@
+from dotenv import load_dotenv
+import os
 from ultralytics import YOLO
+import wandb
+from wandb.integration.ultralytics import add_wandb_callback
+load_dotenv()
+api_key = os.getenv("WANDB_API_KEY")
+wandb.login(key=(api_key))
 
-# Load a pretrained YOLO model (recommended for training)
-model = YOLO("yolo11n.pt")
+wandb.init(project="mini-project",
+        job_type="training",)
 
-# Train the model using the 'coco8.yaml' dataset for 3 epochs with reduced batch size and image size
-results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml", epochs=3, batch=8, imgsz=320, workers=0)
+# Load a YOLO model
+model = YOLO("yolo11s.pt")
 
+
+add_wandb_callback(model,
+                   enable_model_checkpointing=True,
+                   )
+
+
+# Train and Fine-Tune the Model
+model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml", 
+            epochs=69, 
+            project="mini-project", 
+            name="yolo11s",
+            batch=2,
+            workers=1,
+            cache=False,
+            patience=20,
+            )
+
+
+    
 # Evaluate the model's performance on the validation set
-results = model.val(workers=0)
+# results = model.val(workers=1,
+#                     batch=32,  # Match the batch size used in training
+#                     )
 
-# Perform object detection on an image using the model
-# results = model("https://ultralytics.com/images/bus.jpg")
 
-# Export the model to ONNX format
-# success = model.export(format="onnx")
+# model.train(task="detect", 
+#             mode="train", 
+#             model="yolov8n.pt", 
+#             data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml,"
+#             epochs=10,
+#             time=None,
+#             patience=100,
+#             batch=4,
+#             imgsz=640,
+#             save=True,
+#             save_period=-1,
+#             cache=False,
+#             device=None,
+#             workers=1,
+#             project=None,
+#             name=train29,
+#             exist_ok=False,
+#             pretrained=True,
+#             optimizer=auto,
+#             verbose=True,
+#             seed=0,
+#             deterministic=True,
+#             single_cls=False
+#             rect=False
+#             cos_lr=False
+#             close_mosaic=10
+#             resume=False
+#             amp=True
+#             fraction=1.0
+#             profile=False
+#             freeze=None
+#             multi_scale=False
+#             overlap_mask=True
+#             mask_ratio=4
+#             dropout=0.0
+#             val=True
+#             split=val
+#             save_json=False
+#             save_hybrid=False
+#             conf=None
+#             iou=0.7
+#             max_det=300
+#             half=False
+#             dnn=False
+#             plots=True
+#             source=None
+#             vid_stride=1
+#             stream_buffer=False
+#             visualize=False
+#             augment=False
+#             agnostic_nms=False
+#             classes=None
+#             retina_masks=False
+#             embed=None
+#             show=False
+#             save_frames=False
+#             save_txt=False
+#             save_conf=False
+#             save_crop=False
+#             show_labels=True
+#             show_conf=True
+#             show_boxes=True
+#             line_width=None
+#             format=torchscript
+#             keras=False
+#             optimize=False
+#             int8=False
+#             dynamic=False
+#             simplify=True
+#             opset=None
+#             workspace=4
+#             nms=False
+#             lr0=0.01
+#             lrf=0.01
+#             momentum=0.937
+#             weight_decay=0.0005
+#             warmup_epochs=3.0
+#             warmup_momentum=0.8
+#             warmup_bias_lr=0.1
+#             box=7.5
+#             cls=0.5
+#             dfl=1.5
+#             pose=12.0
+#             kobj=1.0
+#             label_smoothing=0.0
+#             nbs=64
+#             hsv_h=0.015
+#             hsv_s=0.7
+#             hsv_v=0.4
+#             degrees=0.0
+#             translate=0.1
+#             scale=0.5
+#             shear=0.0
+#             perspective=0.0
+#             flipud=0.0
+#             fliplr=0.5
+#             bgr=0.0
+#             mosaic=1.0
+#             mixup=0.0
+#             copy_paste=0.0
+#             copy_paste_mode=flip
+#             auto_augment=randaugment, 
+#             erasing=0.4, 
+#             crop_fraction=1.0, 
+#             cfg=None,
+#             tracker=botsort.yaml,
+#             save_dir=runs/detect/train29,
+#             )

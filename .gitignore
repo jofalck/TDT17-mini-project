@@ -2,6 +2,11 @@
 /data
 /yolo*.pt
 /runs
+/wandb
+/ultralytics
+mini-project
+output.err
+output.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
