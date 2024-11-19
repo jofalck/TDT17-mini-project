@@ -7,6 +7,7 @@
 mini-project
 output.err
 output.txt
+yolo*.pt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -19,17 +19,41 @@ add_wandb_callback(model,
                    )
 
 
+def on_train_epoch_end(trainer): 
+        """ Log metrics for learning rate, and "metrics" (mAP etc. and val losses). Triggered at the end of each fit epoch. """ 
+        wandb.log({**trainer.lr, **trainer.metrics}) 
+        # Log the parameters of the top-performing model 
+        # best_map = trainer.metrics.get('best_map', None) 
+        # if best_map: 
+        #         wandb.log({'Best mAP': best_map}) 
+        #         wandb.log({'Parameters': trainer.model.parameters()})
+
+model.add_callback("on_train_epoch_end", on_train_epoch_end)
+
 # Train and Fine-Tune the Model
-model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml", 
-            epochs=69, 
+results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml", 
+            epochs=2, 
             project="mini-project", 
             name="yolo11s",
-            batch=2,
-            workers=1,
+            batch=4,
+            workers=0,
             cache=False,
             patience=20,
+            conf=0.001,
+            overlap_mask=False,
+            plots=True,
             )
 
+# wandb.log({'Best mAP': results['best_map'], 
+#            'Last mAP': results['last_map'], 
+#            'Precision': results['precision'], 
+#            'Recall': results['recall']})
+
+# model.val(
+#         conf=0.0001,  
+#           )
+
+wandb.finish()
 
     
 # Evaluate the model's performance on the validation set
