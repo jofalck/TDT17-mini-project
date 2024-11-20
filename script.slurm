@@ -1,7 +1,7 @@
 #!/bin/sh
 #SBATCH --account=ie-idi       # E.g. "ie-idi" if you belong to IDI
 #SBATCH --job-name=tdt17-test
-#SBATCH --time=0-2:00:00         # format: D-HH:MM:SS
+#SBATCH --time=0-12:00:00         # format: D-HH:MM:SS
 
 #SBATCH --partition=GPUQ          # Asking for a GPU
 #SBATCH --gres=gpu:1             # Setting the number of GPUs to 1

@@ -32,25 +32,32 @@ model.add_callback("on_train_epoch_end", on_train_epoch_end)
 
 # Train and Fine-Tune the Model
 results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml",
-                      epochs=50,
+                      epochs=70,
                       rect=False,
+                      workers=0,
+                      patience=20,
                       
-                      augment=True,
+                      augment=False,
                       warmup_epochs=3,
                       single_cls=True,
                       cos_lr=True,
                       retina_masks=False,
+                      batch=16,
+                      imgsz=1334,
+                      optimizer='SGD',
                       
 
             project="mini-project", 
             name="yolo11s",
-            batch=4,
-            workers=0,
-            patience=20,
-            conf=0.001,
-            overlap_mask=False,
-            plots=True,
             )
+
+metrics = model.val()  # no arguments needed, dataset and settings remembered
+metrics.box.map  # map50-95
+metrics.box.map50  # map50
+metrics.box.map75  # map75
+metrics.box.maps  # a list contains map50-95 of each category
+
+wandb.finish()
 
 # wandb.log({'Best mAP': results['best_map'], 
 #            'Last mAP': results['last_map'], 
@@ -60,9 +67,6 @@ results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/dat
 # model.val(
 #         conf=0.0001,  
 #           )
-
-wandb.finish()
-
     
 # Evaluate the model's performance on the validation set
 # results = model.val(workers=1,

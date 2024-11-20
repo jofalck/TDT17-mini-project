@@ -1,7 +1,7 @@
 #!/bin/sh
 #SBATCH --account=ie-idi       # E.g. "ie-idi" if you belong to IDI
 #SBATCH --job-name=e10-sweep       # A name for the job
-#SBATCH --time=0-0:45:00         # format: D-HH:MM:SS
+#SBATCH --time=0-1:00:00         # format: D-HH:MM:SS
 
 #SBATCH --partition=GPUQ          # Asking for a GPU
 #SBATCH --gres=gpu:1             # Setting the number of GPUs to 1
