@@ -30,8 +30,10 @@ def on_train_epoch_end(trainer):
 
 model.add_callback("on_train_epoch_end", on_train_epoch_end)
 
+data_aug = "/cluster/home/jofa/tdt17/TDT17-mini-project/augmented_data/data.yaml"
+
 # Train and Fine-Tune the Model
-results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml",
+results = model.train(data=data_aug,
                       epochs=70,
                       rect=False,
                       workers=0,
@@ -47,8 +49,8 @@ results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/dat
                       optimizer='SGD',
                       
 
-            project="mini-project", 
-            name="yolo11s",
+            project="TDT17-mini-project", 
+            name="yolo-full",
             )
 
 metrics = model.val()  # no arguments needed, dataset and settings remembered
