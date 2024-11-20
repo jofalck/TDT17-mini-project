@@ -8,7 +8,7 @@ api_key = os.getenv("WANDB_API_KEY")
 wandb.login(key=(api_key))
 
 wandb.init(project="mini-project",
-        job_type="training",)
+  job_type="training",)
 
 # Load a YOLO model
 model = YOLO("yolo11s.pt")
@@ -20,19 +20,27 @@ add_wandb_callback(model,
 
 
 def on_train_epoch_end(trainer): 
-        """ Log metrics for learning rate, and "metrics" (mAP etc. and val losses). Triggered at the end of each fit epoch. """ 
-        wandb.log({**trainer.lr, **trainer.metrics}) 
-        # Log the parameters of the top-performing model 
-        # best_map = trainer.metrics.get('best_map', None) 
-        # if best_map: 
-        #         wandb.log({'Best mAP': best_map}) 
-        #         wandb.log({'Parameters': trainer.model.parameters()})
+  """ Log metrics for learning rate, and "metrics" (mAP etc. and val losses). Triggered at the end of each fit epoch. """ 
+  wandb.log({**trainer.lr, **trainer.metrics}) 
+  # Log the parameters of the top-performing model 
+  # best_map = trainer.metrics.get('best_map', None) 
+  # if best_map: 
+  #         wandb.log({'Best mAP': best_map}) 
+  #         wandb.log({'Parameters': trainer.model.parameters()})
 
 model.add_callback("on_train_epoch_end", on_train_epoch_end)
 
 # Train and Fine-Tune the Model
-results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml", 
-            epochs=2, 
+results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml",
+                      epochs=50,
+                      rect=False,
+                      
+                      augment=True,
+                      warmup_epochs=3,
+                      single_cls=True,
+                      cos_lr=True,
+                      retina_masks=False,
+
             project="mini-project", 
             name="yolo11s",
             batch=4,
