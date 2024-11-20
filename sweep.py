@@ -22,7 +22,8 @@ metric = {
 
 def on_train_epoch_end(trainer): 
         """ Log metrics for learning rate, and "metrics" (mAP etc. and val losses). Triggered at the end of each fit epoch. """ 
-        wandb.log({**trainer.lr, **trainer.metrics}) 
+        wandb.log({**trainer.metrics}) 
+        # **trainer.lr
         # Log the parameters of the top-performing model 
         # best_map = trainer.metrics.get('best_map', None) 
         # if best_map: 
@@ -63,6 +64,11 @@ parameters_dict = {
         'cos_lr': {
                 'distribution': 'categorical',
                 'values': [True, False]
+        },
+        'conf': {
+                'distribution': 'uniform',
+                'max': 0.75,
+                'min': 0.1,
         },
         'crop_fraction': {
                 'distribution': 'uniform',
@@ -146,7 +152,7 @@ parameters_dict = {
         },
         'optimizer': {
                 'distribution': 'categorical',
-                'values': ['auto', 'SGD', 'Adam', 'RMSProp', None]
+                'values': ['auto', 'SGD', 'Adam', 'RMSProp']
         },
         'overlap_mask': {
                 'distribution': 'categorical',
@@ -188,7 +194,7 @@ parameters_dict = {
         'warmup_momentum': {
                 'distribution': 'uniform',
                 'max': 1.0,
-                'min': 0.4
+                'min': 0.24
         },
         'weight_decay': {
                 'distribution': 'uniform',
@@ -213,50 +219,59 @@ def train(config=None):
                    )
         model.add_callback("on_train_epoch_end", on_train_epoch_end)
 
-        model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml",
+        data_aug = "/cluster/home/jofa/tdt17/TDT17-mini-project/augmented_data/data.yaml"
+        data_norm="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml"
+        model.train(data=data_aug,
                     workers = 0,
                     project="mini-project",
                     name="yolo11s",
                     rect=False,
                     # epochs=config.epochs,
                     epochs=10,
+                    cache=False,
                     
-                    augment=config.augment,
-                    auto_augment=config.auto_augment,
+                    augment=True,
+                    warmup_epochs=3,
+                    single_cls=True,
+                    cos_lr=True,
+                    retina_masks=False,
+                    
                     batch=config.batch,
-                    box=config.box,
-                    close_mosaic=config.close_mosaic,
-                    cls=config.cls,
-                    copy_paste_mode=config.copy_paste_mode,
-                    cos_lr=config.cos_lr,
-                    crop_fraction=config.crop_fraction,
-                    dfl=config.dfl,
-                    erasing=config.erasing, 
-                    fliplr=config.fliplr,
+                    conf=config.conf,
                     hsv_h=config.hsv_h,
                     hsv_s=config.hsv_s,
                     hsv_v=config.hsv_v,
                     imgsz=config.imgsz,
-                    kobj=config.kobj,
                     lr0=config.lr0,
                     lrf=config.lrf,
-                    mask_ratio=config.mask_ratio,
                     momentum=config.momentum,
-                    mosaic=config.mosaic,
-                    nbs=config.nbs,
                     optimizer=config.optimizer,
-                    overlap_mask=config.overlap_mask,
-                    patience=config.patience,
-                    pose=config.pose,
-                    retina_masks=config.retina_masks,
-                    scale=config.scale,
-                    single_cls=config.single_cls,
-                    translate=config.translate,
-                    warmup_epochs=config.warmup_epochs,
-                    warmup_momentum=config.warmup_momentum,
-                    weight_decay=config.weight_decay,
+                    
+                #     auto_augment=config.auto_augment,
+                #     box=config.box,
+                #     close_mosaic=config.close_mosaic,
+                #     cls=config.cls,
+                #     copy_paste_mode=config.copy_paste_mode,
+                #     crop_fraction=config.crop_fraction,
+                #     dfl=config.dfl,
+                #     erasing=config.erasing, 
+                #     fliplr=config.fliplr,
+                #     kobj=config.kobj,
+                #     mask_ratio=config.mask_ratio,
+                #     mosaic=config.mosaic,
+                #     nbs=config.nbs,
+                #     overlap_mask=config.overlap_mask,
+                #     patience=config.patience,
+                #     pose=config.pose,
+                #     scale=config.scale,
+                #     translate=config.translate,
+                #     warmup_momentum=config.warmup_momentum,
+                #     weight_decay=config.weight_decay,
                     )
+        del model
+        torch.cuda.empty_cache()
 
         
 if __name__ == "__main__":
-    wandb.agent(sweep_id, function=train)
+#   wandb.agent(sweep_id, function=train)
+  train()

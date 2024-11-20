@@ -1,0 +1,174 @@
+program: sweep.py
+method: bayes
+project: TDT17-mini-project
+entity: jofalck-ntnu
+metric: 
+  name: metrics/mAP50-95(B)
+  goal: maximize
+parameters:
+  # auto_augment:
+  #   distribution: categorical
+  #   values:
+  #     # - randaugment
+  #     - autoaugment
+  #     - augmix
+  batch:
+    distribution: categorical
+    values:
+      # - -1
+      - 4
+      - 8
+      - 16
+      # - 32
+      - 64
+      # - 128
+      # - 256
+  # box:
+  #   distribution: uniform
+  #   min: 2
+  #   max: 20
+  # close_mosaic:
+  #   distribution: int_uniform
+  #   max: 20
+  #   min: 0
+  # cls:
+  #   distribution: uniform
+  #   max: 1
+  #   min: 0.1
+  # copy_paste_mode:
+  #   distribution: categorical
+  #   values:
+  #     - flip
+  #     - mixup
+  # cos_lr:
+  #   distribution: categorical
+  #   values:
+  #     - true
+  #     - false
+  conf:
+    distribution: uniform
+    max: 0.75
+    min: 0.1
+  # crop_fraction:
+  #   distribution: uniform
+  #   max: 1
+  #   min: 0.1
+  # dfl:
+  #   distribution: uniform
+  #   max: 3
+  #   min: 0.75
+  # epochs:
+  #   distribution: int_uniform
+  #   max: 138
+  #   min: 3
+  # erasing:
+  #   distribution: uniform
+  #   max: 0.8
+  #   min: 0.2
+  # fliplr:
+  #   distribution: uniform
+  #   max: 1
+  #   min: 0.25
+  hsv_h:
+    distribution: uniform
+    max: 0.03
+    min: 0.0075
+  hsv_s:
+    distribution: uniform
+    max: 1
+    min: 0.35
+  hsv_v:
+    distribution: uniform
+    max: 0.8
+    min: 0.2
+  imgsz:
+    distribution: int_uniform
+    max: 1440
+    min: 512
+  # kobj:
+  #   distribution: int_uniform
+  #   max: 2
+  #   min: 1
+  lr0:
+    distribution: uniform
+    max: 0.02
+    min: 0.005
+  lrf:
+    distribution: uniform
+    max: 0.02
+    min: 0.005
+  # mask_ratio:
+  #   distribution: int_uniform
+  #   max: 8
+  #   min: 2
+  momentum:
+    distribution: uniform
+    max: 1
+    min: 0.2685
+  # mosaic:
+  #   distribution: uniform
+  #   max: 1
+  #   min: 0
+  # nbs:
+  #   distribution: int_uniform
+  #   max: 128
+  #   min: 32
+  
+  optimizer:
+    distribution: categorical
+    values:
+      - auto
+      - SGD
+      - AdamW 
+      - NAdam
+      - RAdam
+      # - Adam
+      # - RMSProp
+  # overlap_mask:
+  #   distribution: categorical
+  #   values:
+  #     - true
+  #     - false
+  # patience:
+  #   distribution: int_uniform
+  #   max: 40
+  #   min: 5
+  # pose:
+  #   distribution: int_uniform
+  #   max: 24
+  #   min: 6
+  # retina_masks:
+  #   distribution: categorical
+  #   values:
+  #     - true
+  #     - false
+  # scale:
+  #   distribution: uniform
+  #   max: 1
+  #   min: 0.25
+  # translate:
+  #   distribution: uniform
+  #   max: 1
+  #   min: 0.05
+  # warmup_momentum:
+  #   distribution: uniform
+  #   max: 1.0
+  #   min: 0.24
+  # weight_decay:
+  #   distribution: uniform
+  #   max: 0.001
+  #   min: 0.00025
+  # warmup_epochs:
+  #   distribution: int_uniform
+  #   max: 6
+  #   min: 2
+  # augment:
+  #   distribution: categorical
+  #   values:
+  #     - true
+  #     - false
+  # single_cls:
+  #   distribution: categorical
+  #   values:
+  #     - true
+  #     - false
