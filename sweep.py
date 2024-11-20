@@ -215,7 +215,7 @@ def train(config=None):
         config = wandb.config
         model = YOLO("yolo11s.pt")
         add_wandb_callback(model,
-                   enable_model_checkpointing=True,
+                #    enable_model_checkpointing=True,
                    )
         model.add_callback("on_train_epoch_end", on_train_epoch_end)
 
@@ -230,11 +230,12 @@ def train(config=None):
                     epochs=10,
                     cache=False,
                     
-                    augment=True,
                     warmup_epochs=3,
                     single_cls=True,
                     cos_lr=True,
                     retina_masks=False,
+                    augment=config.augment,
+                    optimizer=config.optimizer,
                     
                     batch=config.batch,
                     conf=config.conf,
@@ -245,7 +246,6 @@ def train(config=None):
                     lr0=config.lr0,
                     lrf=config.lrf,
                     momentum=config.momentum,
-                    optimizer=config.optimizer,
                     
                 #     auto_augment=config.auto_augment,
                 #     box=config.box,

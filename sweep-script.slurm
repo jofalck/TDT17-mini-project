@@ -1,7 +1,7 @@
 #!/bin/sh
 #SBATCH --account=ie-idi       # E.g. "ie-idi" if you belong to IDI
-#SBATCH --job-name=Sweep-10-epoch       # A name for the job
-#SBATCH --time=0-0:15:00         # format: D-HH:MM:SS
+#SBATCH --job-name=e10-sweep       # A name for the job
+#SBATCH --time=0-0:45:00         # format: D-HH:MM:SS
 
 #SBATCH --partition=GPUQ          # Asking for a GPU
 #SBATCH --gres=gpu:1             # Setting the number of GPUs to 1
@@ -40,4 +40,3 @@ wandb agent --count 1 $SWEEP_ID
 # for i in {1..2}; do
 #     sbatch --export=SWEEP_ID=$SWEEP_ID run_sweep.sh
 # done
-# mail-type=ALL

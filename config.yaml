@@ -16,10 +16,10 @@ parameters:
     distribution: categorical
     values:
       # - -1
-      - 4
+      # - 4
       - 8
       - 16
-      # - 32
+      - 32
       - 64
       # - 128
       # - 256
@@ -71,20 +71,20 @@ parameters:
   #   min: 0.25
   hsv_h:
     distribution: uniform
-    max: 0.03
-    min: 0.0075
+    max: 0.04
+    min: 0.0055
   hsv_s:
     distribution: uniform
     max: 1
-    min: 0.35
+    min: 0.25
   hsv_v:
     distribution: uniform
-    max: 0.8
-    min: 0.2
+    max: 0.9
+    min: 0.1
   imgsz:
-    distribution: int_uniform
-    max: 1440
-    min: 512
+    distribution: categorical
+    values: [512, 544, 576, 608, 640, 672, 704, 736, 768, 800, 832, 864, 896, 928, 960, 992, 1024, 1056, 1088, 1120, 1152, 1184, 1216, 1248, 1280, 1312, 1344, 1376, 1408, 1440]
+
   # kobj:
   #   distribution: int_uniform
   #   max: 2
@@ -92,11 +92,11 @@ parameters:
   lr0:
     distribution: uniform
     max: 0.02
-    min: 0.005
+    min: 0.001
   lrf:
     distribution: uniform
     max: 0.02
-    min: 0.005
+    min: 0.001
   # mask_ratio:
   #   distribution: int_uniform
   #   max: 8
@@ -104,7 +104,7 @@ parameters:
   momentum:
     distribution: uniform
     max: 1
-    min: 0.2685
+    min: 0.1685
   # mosaic:
   #   distribution: uniform
   #   max: 1
@@ -113,15 +113,14 @@ parameters:
   #   distribution: int_uniform
   #   max: 128
   #   min: 32
-  
   optimizer:
     distribution: categorical
     values:
       - auto
       - SGD
-      - AdamW 
-      - NAdam
       - RAdam
+      # - AdamW 
+      # - NAdam
       # - Adam
       # - RMSProp
   # overlap_mask:
@@ -162,11 +161,11 @@ parameters:
   #   distribution: int_uniform
   #   max: 6
   #   min: 2
-  # augment:
-  #   distribution: categorical
-  #   values:
-  #     - true
-  #     - false
+  augment:
+    distribution: categorical
+    values:
+      - true
+      - false
   # single_cls:
   #   distribution: categorical
   #   values:

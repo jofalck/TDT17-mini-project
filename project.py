@@ -40,12 +40,12 @@ results = model.train(data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/dat
                       single_cls=True,
                       cos_lr=True,
                       retina_masks=False,
+                      
 
             project="mini-project", 
             name="yolo11s",
             batch=4,
             workers=0,
-            cache=False,
             patience=20,
             conf=0.001,
             overlap_mask=False,
