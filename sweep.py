@@ -211,7 +211,7 @@ sweep_id = wandb.sweep(sweep_config, project="mini-project")
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def train(config=None):
-    with wandb.init(config=config, job_type="train"):
+    with wandb.init(config=config, job_type="sweep"):
         config = wandb.config
         model = YOLO("yolo11s.pt")
         add_wandb_callback(model,
@@ -222,20 +222,22 @@ def train(config=None):
         data_aug = "/cluster/home/jofa/tdt17/TDT17-mini-project/augmented_data/data.yaml"
         data_norm="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml"
         model.train(data=data_aug,
-                    workers = 0,
                     project="mini-project",
-                    name="yolo11s",
+                    name="yolo11s-25-epoch-sweep",
                     rect=False,
                     # epochs=config.epochs,
-                    epochs=10,
+                    epochs=25,
                     cache=False,
                     
                     warmup_epochs=3,
                     single_cls=True,
                     cos_lr=True,
                     retina_masks=False,
-                    augment=config.augment,
+                    augment=False,
                     optimizer=config.optimizer,
+                    
+                #     workers = config.workers,
+                    workers = 0,
                     
                     batch=config.batch,
                     conf=config.conf,
@@ -244,8 +246,9 @@ def train(config=None):
                     hsv_v=config.hsv_v,
                     imgsz=config.imgsz,
                     lr0=config.lr0,
-                    lrf=config.lrf,
                     momentum=config.momentum,
+                    
+                #     lrf=config.lrf,
                     
                 #     auto_augment=config.auto_augment,
                 #     box=config.box,
@@ -270,8 +273,31 @@ def train(config=None):
                     )
         del model
         torch.cuda.empty_cache()
+        
+def check_workers(config=None):
+  """Function that checks the number of workers used in the training process and checks different models. 
+  Useful to see if different 
 
+  Args:
+      config (wand.config, optional): Declared in a .yaml file. Should not be provided directly. 
+  """
+  with wandb.init(config=config, job_type="train"):
+    config = wandb.config
+    model = YOLO(config.model)
+    add_wandb_callback(model)
+    model.add_callback("on_train_epoch_end", on_train_epoch_end)
+
+    data_aug = "/cluster/home/jofa/tdt17/TDT17-mini-project/augmented_data/data.yaml"
+    model.train(
+      data=data_aug,
+      name=f"{config.model}-check-workers",
+      epochs=2,
+      batch=16,
+      cache=False,
+      workers=config.workers,
+    )
         
 if __name__ == "__main__":
 #   wandb.agent(sweep_id, function=train)
   train()
+  # check_workers()

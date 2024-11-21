@@ -1,7 +1,7 @@
 #!/bin/sh
 #SBATCH --account=ie-idi       # E.g. "ie-idi" if you belong to IDI
-#SBATCH --job-name=e10-sweep       # A name for the job
-#SBATCH --time=0-1:00:00         # format: D-HH:MM:SS
+#SBATCH --job-name=sweep_last       # A name for the job
+#SBATCH --time=0-6:00:00         # format: D-HH:MM:SS
 
 #SBATCH --partition=GPUQ          # Asking for a GPU
 #SBATCH --gres=gpu:1             # Setting the number of GPUs to 1
@@ -26,7 +26,7 @@ module purge
 module load Anaconda3/2024.02-1
 conda activate tdt17
 
-wandb agent --count 1 $SWEEP_ID
+wandb agent --count 5 $SWEEP_ID
 
 # python sweep.py
 

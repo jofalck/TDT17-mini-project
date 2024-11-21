@@ -9,6 +9,7 @@ output.err
 output.txt
 yolo*.pt
 /augmented_data
+TDT17-mini-project
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

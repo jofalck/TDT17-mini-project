@@ -1,0 +1,20 @@
+program: sweep.py
+method: bayes
+project: TDT17-mini-project
+entity: jofalck-ntnu
+metric: 
+  name: metrics/mAP50-95(B)
+  goal: maximize
+parameters:
+  workers:
+    distribution: categorical
+    values:
+      - 0
+      - 1
+      - 2
+  model:
+    distribution: categorical
+    values:
+      - yolo11s.pt
+      - yolo11n.pt
+      - yolo11m.pt

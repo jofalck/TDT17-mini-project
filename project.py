@@ -7,7 +7,7 @@ load_dotenv()
 api_key = os.getenv("WANDB_API_KEY")
 wandb.login(key=(api_key))
 
-wandb.init(project="mini-project",
+wandb.init(project="TDT17-mini-project",
   job_type="training",)
 
 # Load a YOLO model
