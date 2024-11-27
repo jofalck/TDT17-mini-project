@@ -1,3 +1,5 @@
+import datetime
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 from ultralytics import YOLO
@@ -10,8 +12,14 @@ wandb.login(key=(api_key))
 wandb.init(project="TDT17-mini-project",
   job_type="training",)
 
+
+current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+
 # Load a YOLO model
-model = YOLO("yolo11s.pt")
+# model = YOLO("yolo11s.pt")
+# model = YOLO('/cluster/home/jofa/tdt17/TDT17-mini-project/mini-project/yolo11s79/weights/last.pt')
+model = YOLO('/cluster/home/jofa/tdt17/TDT17-mini-project/mini-project/yolo11s-25-epoch-sweep5/weights/best.pt')
 
 
 add_wandb_callback(model,
@@ -22,165 +30,70 @@ add_wandb_callback(model,
 def on_train_epoch_end(trainer): 
   """ Log metrics for learning rate, and "metrics" (mAP etc. and val losses). Triggered at the end of each fit epoch. """ 
   wandb.log({**trainer.lr, **trainer.metrics}) 
-  # Log the parameters of the top-performing model 
-  # best_map = trainer.metrics.get('best_map', None) 
-  # if best_map: 
-  #         wandb.log({'Best mAP': best_map}) 
-  #         wandb.log({'Parameters': trainer.model.parameters()})
 
 model.add_callback("on_train_epoch_end", on_train_epoch_end)
 
 data_aug = "/cluster/home/jofa/tdt17/TDT17-mini-project/augmented_data/data.yaml"
 
-# Train and Fine-Tune the Model
 results = model.train(data=data_aug,
-                      epochs=70,
-                      rect=False,
-                      workers=0,
-                      patience=20,
+                      batch=16,
+                      conf=0.31685501046027204,
+                      hsv_h=0.01579634466599653,
+                      hsv_s=0.8695094684209294,
+                      hsv_v=0.7438035826433458,
+                      lr0=0.0223007054062638,
+                      momentum=0.4160743757243235,
+                      optimizer="SGD",
+                      epochs=150,
+                      patience=50,
+                      workers=1,
                       
+                      rect=False,
                       augment=False,
                       warmup_epochs=3,
                       single_cls=True,
                       cos_lr=True,
                       retina_masks=False,
-                      batch=16,
-                      imgsz=1334,
-                      optimizer='SGD',
                       
+                      project="TDT17-mini-project",
+                      name=f"yolo-full {current_time}",
+                      )
 
-            project="TDT17-mini-project", 
-            name="yolo-full",
-            )
 
-metrics = model.val()  # no arguments needed, dataset and settings remembered
-metrics.box.map  # map50-95
-metrics.box.map50  # map50
-metrics.box.map75  # map75
-metrics.box.maps  # a list contains map50-95 of each category
+model.val(data=Path('/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml'),
+          )
+
+# Train and Fine-Tune the Model
+# results = model.train(data=data_aug,
+#                       epochs=100,
+#                       patience=20,
+#                       workers=0,
+                      
+#                       rect=False,
+#                       augment=False,
+#                       warmup_epochs=3,
+#                       single_cls=True,
+#                       cos_lr=True,
+#                       retina_masks=False,
+                      
+#                       batch=16,
+#                       imgsz=1440,
+#                       optimizer='SGD',
+#                       conf=0.3,
+#                       hsv_h=0.025,
+#                       hsv_s=0.77,
+#                       hsv_v=0.86,
+#                       lr0=0.006,
+#                       momentum=0.61,
+                      
+#             project="TDT17-mini-project", 
+#             name="yolo-full",
+#             )
+
+# metrics = model.val()  # no arguments needed, dataset and settings remembered
+# metrics.box.map  # map50-95
+# metrics.box.map50  # map50
+# metrics.box.map75  # map75
+# metrics.box.maps  # a list contains map50-95 of each category
 
 wandb.finish()
-
-# wandb.log({'Best mAP': results['best_map'], 
-#            'Last mAP': results['last_map'], 
-#            'Precision': results['precision'], 
-#            'Recall': results['recall']})
-
-# model.val(
-#         conf=0.0001,  
-#           )
-    
-# Evaluate the model's performance on the validation set
-# results = model.val(workers=1,
-#                     batch=32,  # Match the batch size used in training
-#                     )
-
-
-# model.train(task="detect", 
-#             mode="train", 
-#             model="yolov8n.pt", 
-#             data="/cluster/home/jofa/tdt17/TDT17-mini-project/data/data.yaml,"
-#             epochs=10,
-#             time=None,
-#             patience=100,
-#             batch=4,
-#             imgsz=640,
-#             save=True,
-#             save_period=-1,
-#             cache=False,
-#             device=None,
-#             workers=1,
-#             project=None,
-#             name=train29,
-#             exist_ok=False,
-#             pretrained=True,
-#             optimizer=auto,
-#             verbose=True,
-#             seed=0,
-#             deterministic=True,
-#             single_cls=False
-#             rect=False
-#             cos_lr=False
-#             close_mosaic=10
-#             resume=False
-#             amp=True
-#             fraction=1.0
-#             profile=False
-#             freeze=None
-#             multi_scale=False
-#             overlap_mask=True
-#             mask_ratio=4
-#             dropout=0.0
-#             val=True
-#             split=val
-#             save_json=False
-#             save_hybrid=False
-#             conf=None
-#             iou=0.7
-#             max_det=300
-#             half=False
-#             dnn=False
-#             plots=True
-#             source=None
-#             vid_stride=1
-#             stream_buffer=False
-#             visualize=False
-#             augment=False
-#             agnostic_nms=False
-#             classes=None
-#             retina_masks=False
-#             embed=None
-#             show=False
-#             save_frames=False
-#             save_txt=False
-#             save_conf=False
-#             save_crop=False
-#             show_labels=True
-#             show_conf=True
-#             show_boxes=True
-#             line_width=None
-#             format=torchscript
-#             keras=False
-#             optimize=False
-#             int8=False
-#             dynamic=False
-#             simplify=True
-#             opset=None
-#             workspace=4
-#             nms=False
-#             lr0=0.01
-#             lrf=0.01
-#             momentum=0.937
-#             weight_decay=0.0005
-#             warmup_epochs=3.0
-#             warmup_momentum=0.8
-#             warmup_bias_lr=0.1
-#             box=7.5
-#             cls=0.5
-#             dfl=1.5
-#             pose=12.0
-#             kobj=1.0
-#             label_smoothing=0.0
-#             nbs=64
-#             hsv_h=0.015
-#             hsv_s=0.7
-#             hsv_v=0.4
-#             degrees=0.0
-#             translate=0.1
-#             scale=0.5
-#             shear=0.0
-#             perspective=0.0
-#             flipud=0.0
-#             fliplr=0.5
-#             bgr=0.0
-#             mosaic=1.0
-#             mixup=0.0
-#             copy_paste=0.0
-#             copy_paste_mode=flip
-#             auto_augment=randaugment, 
-#             erasing=0.4, 
-#             crop_fraction=1.0, 
-#             cfg=None,
-#             tracker=botsort.yaml,
-#             save_dir=runs/detect/train29,
-#             )

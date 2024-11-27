@@ -1,11 +1,10 @@
 #!/bin/sh
 #SBATCH --account=ie-idi       # E.g. "ie-idi" if you belong to IDI		
-#SBATCH --job-name=2wtfisgoingon
-#SBATCH --time=0-16:00:00         # format: D-HH:MM:SS
+#SBATCH --job-name=test_tdt17
+#SBATCH --time=0-0:5:00         # format: D-HH:MM:SS
 
 #SBATCH --partition=GPUQ          # Asking for a GPU
 #SBATCH --gres=gpu:1             # Setting the number of GPUs to 1
-#SBATCH --constraint="a100|h100"
 #SBATCH --nodes=1
 #SBATCH --output=output.txt      # Specifying 'stdout'
 #SBATCH --error=output.err        # Specifying 'stderr'
@@ -25,4 +24,5 @@ module purge
 # Running your python file
 module load Anaconda3/2024.02-1
 conda activate tdt17
-python project.py
+# python test.py
+python test_og.py
